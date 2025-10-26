@@ -30,3 +30,31 @@ int main(){
     Rectangle rect(4,5);
     cout << rect.area();
 }
+
+// Factory Design Pattern
+// what is static
+// what is ::
+class Vehicle{
+    public:
+    virtual void printType() = 0;
+    virtual ~Vehicle() {}
+};
+class Car: public Vehicle{
+    public:
+    void printType() override{
+      cout << "This is a Car" << endl;   
+    }
+};
+class vehicleFactory{
+public:
+    static Vehicle* getVehicle(string v){
+        if(v == "car"){
+            return new Car();
+        }
+        return nullptr;
+    }
+};
+int main(){
+    Vehicle* v1 = vehicleFactory::getVehicle("car");
+    v1->printType();
+}

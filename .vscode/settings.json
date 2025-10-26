@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.ejs": "django-html",
+        "*.html": "html",
+        "new": "cpp"
+    }
+}
