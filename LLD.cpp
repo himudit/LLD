@@ -69,35 +69,82 @@ int main()
 
 // Abstract Factory Pattern
 // Manage Different Car Brands
-class Vehicle
+// class Vehicle
+// {
+// public:
+//     virtual void printType() = 0;
+//     virtual ~Vehicle() {}
+// };
+// class Honda : public Vehicle
+// {
+// public:
+//     void printType() override
+//     {
+//         cout << "I am of Honda Type";
+//     }
+// };
+// class vehicleFactory
+// {
+// public:
+//     virtual Vehicle* createVehicle() = 0;
+// };
+// class HondaFactory : public vehicleFactory
+// {
+// public:
+//     Vehicle* createVehicle() override
+//     {
+//         return new Honda();
+//     }
+// };
+// int main(){
+//     vehicleFactory* factory = new HondaFactory();
+//     Vehicle* honda = factory->createVehicle();
+// }
+
+// Builder Design Pattern
+// Used to make custom object
+// Traditional Method use Constructor Overloading
+class Car
 {
-public:
-    virtual void printType() = 0;
-    virtual ~Vehicle() {}
-};
-class Honda : public Vehicle
-{
-public:
-    void printType() override
+private:
+    string engine;
+    int seats;
+    Car(const string &engine, int seats)
     {
-        cout << "I am of Honda Type";
+        this->engine = engine;
+        this->seats = seats;
     }
-};
-class vehicleFactory
-{
+
 public:
-    virtual Vehicle* createVehicle() = 0;
-};
-class HondaFactory : public vehicleFactory
-{
-public:
-    Vehicle* createVehicle() override
+    string getEngine()
     {
-        return new Honda();
+        return engine;
     }
+    int getSeats()
+    {
+        return seats;
+    }
+
+public:
+    class CarBuilder
+    {
+    private:
+        string engine;
+        int seats;
+
+    public:
+        CarBuilder &setEngine(const string &engine)
+        {
+            this->engine = engine;
+            return *this;
+        }
+        Car build()
+        {
+            return Car(engine, seats);
+        }
+    };
 };
 
 int main(){
-    vehicleFactory* factory = new HondaFactory();
-    Vehicle* honda = factory->createVehicle();
+    Car myCar = Car::CarBuilder().setEngine("V8").build();
 }
