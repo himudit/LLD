@@ -104,47 +104,76 @@ int main()
 // Builder Design Pattern
 // Used to make custom object
 // Traditional Method use Constructor Overloading
-class Car
+// class Car
+// {
+// private:
+//     string engine;
+//     int seats;
+//     Car(const string &engine, int seats)
+//     {
+//         this->engine = engine;
+//         this->seats = seats;
+//     }
+
+// public:
+//     string getEngine()
+//     {
+//         return engine;
+//     }
+//     int getSeats()
+//     {
+//         return seats;
+//     }
+
+// public:
+//     class CarBuilder
+//     {
+//     private:
+//         string engine;
+//         int seats;
+//     public:
+//         CarBuilder &setEngine(const string &engine)
+//         {
+//             this->engine = engine;
+//             return *this;
+//         }
+//         Car build()
+//         {
+//             return Car(engine, seats);
+//         }
+//     };
+// };
+
+// int main(){
+//     Car myCar = Car::CarBuilder().setEngine("V8").build();
+// }
+
+// Singleton Design Pattern
+class Logger
 {
 private:
-    string engine;
-    int seats;
-    Car(const string &engine, int seats)
+    static Logger *instance;
+    Logger()
     {
-        this->engine = engine;
-        this->seats = seats;
+        // cout
     }
 
 public:
-    string getEngine()
+    static Logger *getInstance()
     {
-        return engine;
-    }
-    int getSeats()
-    {
-        return seats;
-    }
-
-public:
-    class CarBuilder
-    {
-    private:
-        string engine;
-        int seats;
-// \\
-    public:
-        CarBuilder &setEngine(const string &engine)
+        if (instance == nullptr)
         {
-            this->engine = engine;
-            return *this;
+            instance = new Logger();
         }
-        Car build()
-        {
-            return Car(engine, seats);
-        }
-    };
+        return instance;
+    }
+    void log(string message)
+    {
+        cout << "Log: " << message << endl;
+    }
 };
-
-int main(){
-    Car myCar = Car::CarBuilder().setEngine("V8").build();
+int main()
+{
+    Logger *log1 = Logger::getInstance();
+    log1->log("ejee");
 }
