@@ -149,31 +149,92 @@ int main()
 // }
 
 // Singleton Design Pattern
-class Logger
+// class Logger
+// {
+// private:
+//     static Logger *instance;
+//     Logger()
+//     {
+//         // cout
+//     }
+
+// public:
+//     static Logger *getInstance()
+//     {
+//         if (instance == nullptr)
+//         {
+//             instance = new Logger();
+//         }
+//         return instance;
+//     }
+//     void log(string message)
+//     {
+//         cout << "Log: " << message << endl;
+//     }
+// };
+// int main()
+// {
+//     Logger *log1 = Logger::getInstance();
+//     log1->log("ejee");
+// }
+
+// Notification System
+class Notification
 {
-private:
-    static Logger *instance;
-    Logger()
-    {
-        // cout
-    }
+protected:
+    string messages;
 
 public:
-    static Logger *getInstance()
+    Notification() = default;
+    Notification(const string m)
     {
-        if (instance == nullptr)
-        {
-            instance = new Logger();
-        }
-        return instance;
+        this->messages = m;
     }
-    void log(string message)
+
+    string getMessage()
     {
-        cout << "Log: " << message << endl;
+        return this->messages;
+    }
+    void setMessage(const string m)
+    {
+        this->messages = m;
+    }
+
+    virtual ~Notification() = default;
+};
+
+class Email : public Notification
+{
+public:
+    Email() = default;
+    Email(const string messages) : Notification(messages) {}
+};
+
+class SMS : public Notification
+{
+
+public:
+    SMS() = default;
+};
+
+class NotificationFactory
+{
+public:
+    virtual Notification *getNotificationUsingType() = 0;
+};
+
+class EmailFactory : public NotificationFactory
+{
+public:
+    Notification *getNotificationUsingType() override
+    {
+        return new Email();
     }
 };
+
 int main()
 {
-    Logger *log1 = Logger::getInstance();
-    log1->log("ejee");
+    NotificationFactory *factory = new EmailFactory();
+    Notification *n = factory->getNotificationUsingType();
+    n->setMessage("Hi, how are you!!");
 }
