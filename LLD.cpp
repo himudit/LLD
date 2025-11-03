@@ -208,6 +208,38 @@ class Email : public Notification
 public:
     Email() = default;
     Email(const string messages) : Notification(messages) {}
+    class Builder
+    {
+    private:
+        string recipient;
+        string messages;
+        string senderName;
+
+    public:
+        Builder setRecipient(string r)
+        {
+            this->recipient = r;
+            return *this;
+        }
+
+        Builder setMessage(string m)
+        {
+            this->messages = m;
+            return *this;
+        }
+
+        Builder setSenderName(string sN)
+        {
+            this->senderName = sN;
+            return *this;
+        }
+        Notification *build()
+        {
+            Email *e = new Email();
+            e->setMessage(this->messages);
+            return e;
+        }
+    };
 };
 
 class SMS : public Notification
@@ -220,21 +252,24 @@ public:
 class NotificationFactory
 {
 public:
-    virtual Notification *getNotificationUsingType() = 0;
+    virtual Notification *getNotificationUsingType(const string &message, const string &recipient) = 0;
 };
 
 class EmailFactory : public NotificationFactory
 {
 public:
-    Notification *getNotificationUsingType() override
+    Notification *getNotificationUsingType(const string &message, const string &recipient) override
     {
-        return new Email();
+        return Email::Builder()
+            .setMessage("ee")
+            .setRecipient("eje")
+            .build();
     }
 };
 
 int main()
 {
     NotificationFactory *factory = new EmailFactory();
-    Notification *n = factory->getNotificationUsingType();
+    Notification *n = factory->getNotificationUsingType("Hello!", "abc@gmail.com");
     n->setMessage("Hi, how are you!!");
 }
