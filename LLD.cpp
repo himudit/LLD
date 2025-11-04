@@ -178,98 +178,142 @@ int main()
 //     log1->log("ejee");
 // }
 
-// Notification System
-class Notification
-{
-protected:
-    string messages;
+// Notification System Practise
+// class Notification
+// {
+// protected:
+//     string messages;
 
+// public:
+//     Notification() = default;
+//     Notification(const string m)
+//     {
+//         this->messages = m;
+//     }
+
+//     string getMessage()
+//     {
+//         return this->messages;
+//     }
+//     void setMessage(const string m)
+//     {
+//         this->messages = m;
+//     }
+
+//     virtual ~Notification() = default;
+// };
+
+// class Email : public Notification
+// {
+// public:
+//     Email() = default;
+//     Email(const string messages) : Notification(messages) {}
+//     class Builder
+//     {
+//     private:
+//         string recipient;
+//         string messages;
+//         string senderName;
+
+//     public:
+//         Builder setRecipient(string r)
+//         {
+//             this->recipient = r;
+//             return *this;
+//         }
+
+//         Builder setMessage(string m)
+//         {
+//             this->messages = m;
+//             return *this;
+//         }
+
+//         Builder setSenderName(string sN)
+//         {
+//             this->senderName = sN;
+//             return *this;
+//         }
+//         Notification *build()
+//         {
+//             Email *e = new Email();
+//             e->setMessage(this->messages);
+//             return e;
+//         }
+//     };
+// };
+
+// class SMS : public Notification
+// {
+
+// public:
+//     SMS() = default;
+// };
+
+// class NotificationFactory
+// {
+// public:
+//     virtual Notification *getNotificationUsingType(const string &message, const string &recipient) = 0;
+// };
+
+// class EmailFactory : public NotificationFactory
+// {
+// public:
+//     Notification *getNotificationUsingType(const string &message, const string &recipient) override
+//     {
+//         return Email::Builder()
+//             .setMessage("ee")
+//             .setRecipient("eje")
+//             .build();
+//     }
+// };
+
+// int main()
+// {
+//     NotificationFactory *factory = new EmailFactory();
+//     Notification *n = factory->getNotificationUsingType("Hello!", "abc@gmail.com");
+//     n->setMessage("Hi, how are you!!");
+// }
+
+// Strategy Pattern
+class PaymentStrategy
+{
 public:
-    Notification() = default;
-    Notification(const string m)
+    virtual void processPayment(double amount) = 0;
+    virtual ~PaymentStrategy() = default;
+};
+class CreditCard : public PaymentStrategy
+{
+public:
+    void processPayment(double amount) override
     {
-        this->messages = m;
+        cout << "Paid " << amount << " using Credit Card\n";
     }
-
-    string getMessage()
-    {
-        return this->messages;
-    }
-    void setMessage(const string m)
-    {
-        this->messages = m;
-    }
-
-    virtual ~Notification() = default;
 };
-
-class Email : public Notification
+class PayPal : public PaymentStrategy
 {
 public:
-    Email() = default;
-    Email(const string messages) : Notification(messages) {}
-    class Builder
+    void processPayment(double amount) override
     {
-    private:
-        string recipient;
-        string messages;
-        string senderName;
-
-    public:
-        Builder setRecipient(string r)
-        {
-            this->recipient = r;
-            return *this;
-        }
-
-        Builder setMessage(string m)
-        {
-            this->messages = m;
-            return *this;
-        }
-
-        Builder setSenderName(string sN)
-        {
-            this->senderName = sN;
-            return *this;
-        }
-        Notification *build()
-        {
-            Email *e = new Email();
-            e->setMessage(this->messages);
-            return e;
-        }
-    };
-};
-
-class SMS : public Notification
-{
-
-public:
-    SMS() = default;
-};
-
-class NotificationFactory
-{
-public:
-    virtual Notification *getNotificationUsingType(const string &message, const string &recipient) = 0;
-};
-
-class EmailFactory : public NotificationFactory
-{
-public:
-    Notification *getNotificationUsingType(const string &message, const string &recipient) override
-    {
-        return Email::Builder()
-            .setMessage("ee")
-            .setRecipient("eje")
-            .build();
+        cout << "Paid " << amount << " using PayPal\n";
     }
 };
+class PaymentProcessor
+{
+private:
+    PaymentStrategy *strategy;
 
+public:
+    PaymentProcessor(PaymentStrategy *s) : strategy(s) {}
+    void process(double amount)
+    {
+        strategy->processPayment(amount);
+    }
+};
 int main()
 {
-    NotificationFactory *factory = new EmailFactory();
-    Notification *n = factory->getNotificationUsingType("Hello!", "abc@gmail.com");
-    n->setMessage("Hi, how are you!!");
+    CreditCard credit;
+    PayPal paypal;
+
+    PaymentProcessor processor1(&credit);
+    processor1.process(100.0);
 }
