@@ -275,45 +275,108 @@ int main()
 // }
 
 // Strategy Pattern
-class PaymentStrategy
+// class PaymentStrategy
+// {
+// public:
+//     virtual void processPayment(double amount) = 0;
+//     virtual ~PaymentStrategy() = default;
+// };
+// class CreditCard : public PaymentStrategy
+// {
+// public:
+//     void processPayment(double amount) override
+//     {
+//         cout << "Paid " << amount << " using Credit Card\n";
+//     }
+// };
+// class PayPal : public PaymentStrategy
+// {
+// public:
+//     void processPayment(double amount) override
+//     {
+//         cout << "Paid " << amount << " using PayPal\n";
+//     }
+// };
+// class PaymentProcessor
+// {
+// private:
+//     PaymentStrategy *strategy;
+
+// public:
+//     PaymentProcessor(PaymentStrategy *s) : strategy(s) {}
+//     void process(double amount)
+//     {
+//         strategy->processPayment(amount);
+//     }
+// };
+// int main()
+// {
+//     CreditCard credit;
+//     PayPal paypal;
+
+//     PaymentProcessor processor1(&credit);
+//     processor1.process(100.0);
+// }
+
+// Ride-Sharing System Practise
+// Users can book rides of different types (Bike, Mini, SUV). (check for availability)
+// Different payment methods (UPI, Card, Wallet) are supported.
+// You can have different app themes/brands (Uber vs Ola).
+// Riders get live fare updates based on traffic (observers).
+class RideVehicle
 {
-public:
-    virtual void processPayment(double amount) = 0;
-    virtual ~PaymentStrategy() = default;
+protected:
+    string vehicleNumber;
 };
-class CreditCard : public PaymentStrategy
+class Bike : public RideVehicle
 {
-public:
-    void processPayment(double amount) override
-    {
-        cout << "Paid " << amount << " using Credit Card\n";
-    }
 };
-class PayPal : public PaymentStrategy
+class Mini : public RideVehicle
 {
-public:
-    void processPayment(double amount) override
-    {
-        cout << "Paid " << amount << " using PayPal\n";
-    }
 };
-class PaymentProcessor
+class User
 {
 private:
-    PaymentStrategy *strategy;
+    string name;
+    string number;
 
 public:
-    PaymentProcessor(PaymentStrategy *s) : strategy(s) {}
-    void process(double amount)
+    User(const string &name, const string &number)
     {
-        strategy->processPayment(amount);
+        this->name = name;
+        this->number = number;
     }
 };
+class BookingFactory
+{
+public:
+    virtual RideVehicle *book() = 0;
+};
+class BikeBookingFactory : public BookingFactory
+{
+public:
+    RideVehicle *book() override
+    {
+        cout << "congrats your bike is booked";
+        return new Bike();
+    }
+};
+class MiniBookingFactory : public BookingFactory
+{
+public:
+    RideVehicle *book() override
+    {
+         cout << "congrats your Mini is booked";
+        return new Mini();
+    }
+};
+class Rider
+{
+};
+
 int main()
 {
-    CreditCard credit;
-    PayPal paypal;
-
-    PaymentProcessor processor1(&credit);
-    processor1.process(100.0);
+    User *user1 = new User("Mudit", "8920337878");
+    BookingFactory *bikeFactory = new BikeBookingFactory();
+    RideVehicle *bookedBike = bikeFactory->book();
 }
