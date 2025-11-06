@@ -26,11 +26,11 @@ public:
     }
 };
 
-int main()
-{
-    Rectangle rect(4, 5);
-    cout << rect.area();
-}
+// int main()
+// {
+//     Rectangle rect(4, 5);
+//     cout << rect.area();
+// }
 
 // Factory Design Pattern
 // what is static
@@ -61,11 +61,11 @@ public:
         return nullptr;
     }
 };
-int main()
-{
-    Vehicle *v1 = vehicleFactory::getVehicle("car");
-    v1->printType();
-}
+// int main()
+// {
+//     Vehicle *v1 = vehicleFactory::getVehicle("car");
+//     v1->printType();
+// }
 
 // Abstract Factory Pattern
 // Manage Different Car Brands
@@ -319,20 +319,56 @@ int main()
 // }
 
 // Ride-Sharing System Practise
-// Users can book rides of different types (Bike, Mini, SUV). (check for availability)
-// Different payment methods (UPI, Card, Wallet) are supported.
+// Users can book rides of different types (Bike, Mini, SUV).✅ (check for availability)
+// Different payment methods (UPI, Card, Wallet) are supported.✅
 // You can have different app themes/brands (Uber vs Ola).
 // Riders get live fare updates based on traffic (observers).
 class RideVehicle
 {
 protected:
+    string vehicleName;
     string vehicleNumber;
+
+public:
+    RideVehicle(const string &name, const string &number)
+        : vehicleName(name), vehicleNumber(number) {}
+    string getVehicleName()
+    {
+        return this->vehicleName;
+    }
 };
 class Bike : public RideVehicle
 {
+public:
+    Bike(const string &name, const string &number) : RideVehicle(name, number) {}
 };
 class Mini : public RideVehicle
 {
+public:
+    Mini(const string &name, const string &number) : RideVehicle(name, number) {}
+};
+class Rider
+{
+private:
+    string name;
+    string number;
+    RideVehicle *vehicle;
+
+public:
+    Rider(const string &name, const string &number, RideVehicle *v)
+    {
+        this->name = name;
+        this->number = number;
+        this->vehicle = v;
+    }
+    string getName()
+    {
+        return this->name;
+    }
+    RideVehicle *getVehicle()
+    {
+        return vehicle;
+    }
 };
 class User
 {
@@ -346,37 +382,104 @@ public:
         this->name = name;
         this->number = number;
     }
+    string getName()
+    {
+        return this->name;
+    }
+};
+class Booking
+{
+private:
+    User *user;           // who booked
+    Rider *rider;         // who is driving
+    RideVehicle *vehicle; // what vehicle
+    string bookingType;   // "Bike", "Mini", etc.
+    string bookingId;     // unique ID
+    double fare;          // cost of ride
+
+public:
+    Booking(User *user, Rider *rider, RideVehicle *vehicle, const string &type)
+        : user(user), rider(rider), vehicle(vehicle), bookingType(type)
+    {
+        // generate unique booking ID
+        static int idCounter = 1;
+        bookingId = "BOOK" + to_string(idCounter++);
+        fare = calculateFare();
+    }
+
+    double calculateFare()
+    {
+        if (bookingType == "Bike Booking")
+            return 50.0;
+        if (bookingType == "Mini Booking")
+            return 100.0;
+        return 80.0;
+    }
+
+    void showBookingDetails()
+    {
+        cout << "Booking ID: " << bookingId << endl;
+        cout << "Type: " << bookingType << endl;
+        cout << "Fare: " << fare << endl;
+        cout << "User: " << user->getName() << endl;
+        cout << "Rider: " << rider->getName() << endl;
+    }
 };
 class BookingFactory
 {
 public:
-    virtual RideVehicle *book() = 0;
+    virtual Booking *createBooking(User *user, Rider *rider, RideVehicle *vehicle) = 0;
 };
 class BikeBookingFactory : public BookingFactory
 {
 public:
-    RideVehicle *book() override
+    Booking *createBooking(User *user, Rider *rider, RideVehicle *vehicle) override
     {
-        cout << "congrats your bike is booked";
-        return new Bike();
+        return new Booking(user, rider, vehicle, "Bike Booking");
     }
 };
-class MiniBookingFactory : public BookingFactory
+class PaymentStrategy
 {
 public:
-    RideVehicle *book() override
+    virtual void processPayment(double amount, User *user, Rider *rider, RideVehicle *vehicle) = 0;
+    virtual ~PaymentStrategy() = default;
+};
+class UPI : public PaymentStrategy
+{
+public:
+    void processPayment(double amount, User *user, Rider *rider, RideVehicle *vehicle) override
     {
-         cout << "congrats your Mini is booked";
-        return new Mini();
+        cout << "Paid " << amount << " to " << rider->getName()
+             << " by " << user->getName()
+             << " for ride " << vehicle->getVehicleName()
+             << " using UPI\n";
     }
 };
-class Rider
+class PaymentProcessor
 {
-};
+private:
+    PaymentStrategy *strategy;
+    User *user;
+    Rider *rider;
+    RideVehicle *vehicle;
 
+public:
+    PaymentProcessor(PaymentStrategy *s, User *u, Rider *r, RideVehicle *v)
+        : strategy(s), user(u), rider(r), vehicle(v) {}
+    void process(double amount)
+    {
+        strategy->processPayment(amount, user, rider, vehicle);
+    }
+};
 int main()
 {
     User *user1 = new User("Mudit", "8920337878");
+    Rider *rider1 = new Rider("Yash", "9212388370", nullptr);
+    RideVehicle *bike = new Bike("Pulsar", "HR-26AB1234");
     BookingFactory *bikeFactory = new BikeBookingFactory();
-    RideVehicle *bookedBike = bikeFactory->book();
+    Booking *booking = bikeFactory->createBooking(user1, rider1, bike);
+    booking->showBookingDetails();
+    UPI upiProcessor;
+    PaymentProcessor paymentProcessor(&upiProcessor, user1, rider1, bike);
+    paymentProcessor.process(100);
 }
