@@ -353,8 +353,6 @@ private:
     string name;
     string number;
     RideVehicle *vehicle;
-// \
-
 public:
     Rider(const string &name, const string &number, RideVehicle *v)
     {
