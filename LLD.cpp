@@ -470,15 +470,16 @@ public:
         strategy->processPayment(amount, user, rider, vehicle);
     }
 };
-int main()
-{
-    User *user1 = new User("Mudit", "8920337878");
-    Rider *rider1 = new Rider("Yash", "9212388370", nullptr);
-    RideVehicle *bike = new Bike("Pulsar", "HR-26AB1234");
-    BookingFactory *bikeFactory = new BikeBookingFactory();
-    Booking *booking = bikeFactory->createBooking(user1, rider1, bike);
-    booking->showBookingDetails();
-    UPI upiProcessor;
-    PaymentProcessor paymentProcessor(&upiProcessor, user1, rider1, bike);
-    paymentProcessor.process(100);
-}
+// int main()
+// {
+//     User *user1 = new User("Mudit", "8920337878");
+//     Rider *rider1 = new Rider("Yash", "9212388370", nullptr);
+//     RideVehicle *bike = new Bike("Pulsar", "HR-26AB1234");
+//     BookingFactory *bikeFactory = new BikeBookingFactory();
+//     Booking *booking = bikeFactory->createBooking(user1, rider1, bike);
+//     booking->showBookingDetails();
+//     UPI upiProcessor;
+//     PaymentProcessor paymentProcessor(&upiProcessor, user1, rider1, bike);
+//     paymentProcessor.process(100);
+// }
+
