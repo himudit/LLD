@@ -485,18 +485,6 @@ public:
 // }
 
 // Role Playing Game
-class Character
-{
-protected:
-    string name, gender;
-    AttackStrategy *strategy = nullptr;
-};
-class Warrior : public Character
-{
-};
-class Mage : public Character
-{
-};
 class AttackStrategy
 {
 public:
@@ -519,16 +507,56 @@ public:
         cout << "🪄";
     }
 };
-class AttackProcessor
+class Character
 {
-private:
-    AttackStrategy *as;
+protected:
+    string name, gender;
+    AttackStrategy *strategy = nullptr;
 
 public:
-    AttackProcessor(AttackStrategy *attackStrategy) : as(attackStrategy) {}
-
-    void processor()
+    virtual void setAttackStrategy(AttackStrategy *s) = 0;
+    void performAttack()
     {
-        as->attack();
+        if (strategy)
+            strategy->attack();
+        else
+            cout << "No attack strategy set!\n";
     }
 };
+class Warrior : public Character
+{
+public:
+    void setAttackStrategy(AttackStrategy *s) override
+    {
+        if (dynamic_cast<MeleeAttack *>(s))
+        {
+            strategy = s;
+        }
+        else
+        {
+            cout << "❌ Warrior can only use Melee attacks!\n";
+        }
+    }
+};
+class Mage : public Character
+{
+public:
+    void setAttackStrategy(AttackStrategy *s) override
+    {
+        if (dynamic_cast<MagicAttack *>(s))
+        {
+            strategy = s;
+        }
+        else
+        {
+            cout << "❌ Mage can only use Magic attacks!\n";
+        }
+    }
+};
+int main()
+{
+    MeleeAttack mA;
+    Character *w = new Warrior();
+    w->setAttackStrategy(&mA);
+    w->performAttack();
+}
