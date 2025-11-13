@@ -487,9 +487,9 @@ public:
 // Role Playing Game
 class Character
 {
-private:
-    string name;
-    string gender;
+protected:
+    string name, gender;
+    AttackStrategy *strategy = nullptr;
 };
 class Warrior : public Character
 {
@@ -497,19 +497,38 @@ class Warrior : public Character
 class Mage : public Character
 {
 };
-class MeleeAttack: AttackStrategy{
-
-};
-class MagicAttack : AttackStrategy{
-
-};
 class AttackStrategy
 {
 public:
     virtual void attack() = 0;
+    virtual ~AttackStrategy() = default;
+};
+class MeleeAttack : public AttackStrategy
+{
+public:
+    void attack() override
+    {
+        cout << "⚔️";
+    }
+};
+class MagicAttack : public AttackStrategy
+{
+public:
+    void attack() override
+    {
+        cout << "🪄";
+    }
 };
 class AttackProcessor
 {
 private:
     AttackStrategy *as;
+
+public:
+    AttackProcessor(AttackStrategy *attackStrategy) : as(attackStrategy) {}
+
+    void processor()
+    {
+        as->attack();
+    }
 };
