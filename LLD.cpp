@@ -353,6 +353,7 @@ private:
     string name;
     string number;
     RideVehicle *vehicle;
+
 public:
     Rider(const string &name, const string &number, RideVehicle *v)
     {
@@ -483,3 +484,32 @@ public:
 //     paymentProcessor.process(100);
 // }
 
+// Role Playing Game
+class Character
+{
+private:
+    string name;
+    string gender;
+};
+class Warrior : public Character
+{
+};
+class Mage : public Character
+{
+};
+class MeleeAttack: AttackStrategy{
+
+};
+class MagicAttack : AttackStrategy{
+
+};
+class AttackStrategy
+{
+public:
+    virtual void attack() = 0;
+};
+class AttackProcessor
+{
+private:
+    AttackStrategy *as;
+};
