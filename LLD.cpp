@@ -553,10 +553,10 @@ public:
         }
     }
 };
-int main()
-{
-    MeleeAttack mA;
-    Character *w = new Warrior();
-    w->setAttackStrategy(&mA);
-    w->performAttack();
-}
+// int main()
+// {
+//     MeleeAttack mA;
+//     Character *w = new Warrior();
+//     w->setAttackStrategy(&mA);
+//     w->performAttack();
+// }
