@@ -560,3 +560,137 @@ public:
 //     w->setAttackStrategy(&mA);
 //     w->performAttack();
 // }
+
+// Smart Home Automation System
+
+class SmartLight
+{
+public:
+    bool on;
+    string brand;
+    string color;
+    SmartLight() {}
+    SmartLight(bool on, string brand, string color) : on(on), brand(brand), color(color) {}
+};
+class SmartDoorLock
+{
+public:
+    bool open;
+    string brand;
+    int speed;
+    string password;
+};
+class SmartLightBuilder
+{
+public:
+    virtual void setOn(bool input) = 0;
+    virtual void setBrand(string brand) = 0;
+    virtual void setColor(string color) = 0;
+    virtual SmartLight *build() = 0;
+};
+class ConcreteSmartLightBuilder : public SmartLightBuilder
+{
+private:
+    bool on;
+    string brand;
+    string color;
+
+public:
+    void setOn(bool input)
+    {
+        on = input;
+    }
+    void setBrand(string brand)
+    {
+        brand = brand;
+    }
+    void setColor(string color)
+    {
+        color = color;
+    }
+    SmartLight *build() override
+    {
+        return new SmartLight(on, brand, color);
+    }
+};
+class SmartDoorLock
+{
+};
+class TataSmartLight : public SmartLight
+{
+public:
+    TataSmartLight()
+    {
+        on = false;
+    }
+    // void clickButton() override
+    // {
+    // }
+};
+class TataSmartDoorLock : public SmartDoorLock
+{
+public:
+    TataSmartDoorLock()
+    {
+        // open = false;
+    }
+    // void clickButton() override
+    // {
+    // }
+};
+class TeslaSmartLight : public SmartLight
+{
+public:
+    TeslaSmartLight()
+    {
+        on = false;
+    }
+    // void clickButton() override
+    // {
+    // }
+};
+class TeslaSmartDoorLock : public SmartDoorLock
+{
+public:
+    TeslaSmartDoorLock()
+    {
+        // open = false;
+    }
+    // void clickButton() override
+    // {
+    // }
+};
+class DeviceFactory
+{
+public:
+    virtual SmartLight *createLight() = 0;
+    virtual SmartDoorLock *createDoorLock() = 0;
+    virtual ~DeviceFactory() {}
+};
+class TataFactory : DeviceFactory
+{
+public:
+    SmartLight *createLight() override
+    {
+        return new TataSmartLight();
+    }
+    SmartDoorLock *createDoorLock() override
+    {
+        return new TataSmartDoorLock();
+    }
+};
+class TeslaFactory : DeviceFactory
+{
+public:
+    SmartLight *createLight() override
+    {
+        return new TeslaSmartLight();
+    }
+    SmartDoorLock *createDoorLock() override
+    {
+        return new TeslaSmartDoorLock();
+    }
+};
+int main(){
+    
+}
