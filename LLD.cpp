@@ -787,18 +787,18 @@ public:
         doorCommand->execute();
     }
 };
-int main()
-{
-    Light *l1 = new Light();
-    cout << l1->getLightState();
-    Door *d = new Door();
-    Command *lC = new ChangeLightStateCommand(l1);
-    Command *dC = new ChangeDoorStateCommand(d);
+// int main()
+// {
+//     Light *l1 = new Light();
+//     cout << l1->getLightState();
+//     Door *d = new Door();
+//     Command *lC = new ChangeLightStateCommand(l1);
+//     Command *dC = new ChangeDoorStateCommand(d);
 
-    RemoteControl *remote = new RemoteControl();
-    remote->setLightState(lC);
-    remote->pressLight();
-    cout << l1->getLightState();
-    remote->pressLight();
-    cout << l1->getLightState();
-}
+//     RemoteControl *remote = new RemoteControl();
+//     remote->setLightState(lC);
+//     remote->pressLight();
+//     cout << l1->getLightState();
+//     remote->pressLight();
+//     cout << l1->getLightState();
+// }
