@@ -613,9 +613,6 @@ public:
         return new SmartLight(on, brand, color);
     }
 };
-class SmartDoorLock
-{
-};
 class TataSmartLight : public SmartLight
 {
 public:
@@ -691,6 +688,117 @@ public:
         return new TeslaSmartDoorLock();
     }
 };
-int main(){
-    
+// int main(){
+
+// }
+
+// Commond Pattern -> Remote Control for Multiple Appliances
+class Command
+{
+public:
+    virtual void execute() = 0;
+    // virtual ~Command() = default;
+};
+class Light
+{
+private:
+    bool state;
+
+public:
+    Light()
+    {
+        state = false;
+    }
+    void ChangeStateOfLight()
+    {
+        state = !state;
+    }
+    bool getLightState()
+    {
+        return state;
+    }
+};
+class Door
+{
+private:
+    bool state;
+
+public:
+    Door()
+    {
+        state = false;
+    }
+    void ChangeStateOfDoor()
+    {
+        state = !state;
+    }
+};
+class ChangeLightStateCommand : public Command
+{
+private:
+    Light *light;
+
+public:
+    ChangeLightStateCommand(Light *light)
+    {
+        this->light = light;
+    }
+    void execute()
+    {
+        light->ChangeStateOfLight();
+    }
+};
+class ChangeDoorStateCommand : public Command
+{
+private:
+    Door *door;
+
+public:
+    ChangeDoorStateCommand(Door *door)
+    {
+        this->door = door;
+    }
+    void execute()
+    {
+        door->ChangeStateOfDoor();
+    }
+};
+class RemoteControl
+{
+private:
+    Command *lightCommand;
+    Command *doorCommand;
+
+public:
+    void setLightState(Command *lightCommand)
+    {
+        this->lightCommand = lightCommand;
+    }
+    void setDoorState(Command *doorCommand)
+    {
+        this->doorCommand = doorCommand;
+    }
+    void pressLight()
+    {
+        lightCommand->execute();
+    }
+    void pressDoor()
+    {
+        doorCommand->execute();
+    }
+};
+int main()
+{
+    Light *l1 = new Light();
+    cout << l1->getLightState();
+    Door *d = new Door();
+    Command *lC = new ChangeLightStateCommand(l1);
+    Command *dC = new ChangeDoorStateCommand(d);
+
+    RemoteControl *remote = new RemoteControl();
+    remote->setLightState(lC);
+    remote->pressLight();
+    cout << l1->getLightState();
+    remote->pressLight();
+    cout << l1->getLightState();
 }
