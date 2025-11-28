@@ -133,3 +133,22 @@ public:
         return new PhillipAC;
     }
 };
+
+class Command
+{
+public:
+    virtual void execute() = 0;
+};
+class ChangeLightStateCommand : public Command
+{
+private:
+    Light *l;
+
+public:
+    void execute()
+    {
+    }
+};
+class ChangeDoorStateCommand
+{
+};
