@@ -13,6 +13,10 @@ public:
     {
         this->state = !state;
     }
+    bool getStateOfLight()
+    {
+        return this->state;
+    }
     virtual void info() = 0;
 };
 class Door
@@ -96,7 +100,7 @@ public:
     virtual AC *createAC() = 0;
 };
 
-class SamsungFactory : SmartHomeFactory
+class SamsungFactory : public SmartHomeFactory
 {
 public:
     Light *createLight()
@@ -115,7 +119,7 @@ public:
     }
 };
 
-class PhillipsFactory : SmartHomeFactory
+class PhillipsFactory : public SmartHomeFactory
 {
 public:
     Light *createLight()
@@ -170,3 +174,42 @@ public:
         door->changeStateOfDoor();
     }
 };
+class RemoteControl
+{
+private:
+    Command *lc;
+    Command *dc;
+
+public:
+    void setLightCommand(Command *LightCommand)
+    {
+        this->lc = LightCommand;
+    }
+    void setDoorCommand(Command *DoorCommand)
+    {
+        this->dc = DoorCommand;
+    }
+    void pressLight()
+    {
+        lc->execute();
+    }
+    void pressDoor()
+    {
+        dc->execute();
+    }
+};
+
+int main()
+{
+    SmartHomeFactory *shf = new SamsungFactory();
+    Light *l1 = shf->createLight();
+    // cout << l1->getStateOfLight() << endl;
+    Command *lc = new ChangeLightStateCommand(l1);
+    RemoteControl rc;
+    rc.setLightCommand(lc);
+    rc.pressLight();
+    // cout << l1->getStateOfLight() << endl;
+    rc.pressLight();
+    // cout << l1->getStateOfLight() << endl;
+    // SmartHomeFactory *shf = new PhillipsFactory();
+}
