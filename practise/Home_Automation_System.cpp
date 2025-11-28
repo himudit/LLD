@@ -9,13 +9,9 @@ protected:
     int intensity;
 
 public:
-    void on()
+    void changeStateOfLight()
     {
-        state = true;
-    }
-    void off()
-    {
-        state = false;
+        this->state = !state;
     }
     virtual void info() = 0;
 };
@@ -25,6 +21,10 @@ protected:
     bool state = false;
 
 public:
+    void changeStateOfDoor()
+    {
+        this->state = !state;
+    }
     virtual void info() = 0;
 };
 class AC
@@ -145,10 +145,28 @@ private:
     Light *l;
 
 public:
+    ChangeLightStateCommand(Light *light)
+    {
+        this->l = light;
+    }
     void execute()
     {
+        this->l->changeStateOfLight();
     }
 };
-class ChangeDoorStateCommand
+class ChangeDoorStateCommand : public Command
 {
+private:
+    Door *door;
+
+public:
+    ChangeDoorStateCommand(Door *door)
+    {
+        this->door = door;
+    }
+
+    void execute() override
+    {
+        door->changeStateOfDoor();
+    }
 };
