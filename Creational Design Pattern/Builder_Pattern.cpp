@@ -84,4 +84,5 @@ int main()
     http2.showDetails();
 }
 
-// friend class HTTPBuilder -> helps HTTPBuilder to access Private/Protected Data Members
+// friend class HTTPBuilder -> helps HTTPBuilder to access Private/Protected Data Members.
+// Never make Builder in Abstract class it must be in Concrete class.
