@@ -5,8 +5,8 @@ class Light
 {
 protected:
     bool state = false;
-    string color;
-    int intensity;
+    string color = "noColor";
+    int intensity = 0;
 
 public:
     void changeStateOfLight()
@@ -17,12 +17,20 @@ public:
     {
         return this->state;
     }
+    void getAllAttributesOfLight()
+    {
+        cout << this->state << endl;
+        cout << this->color << endl;
+        cout << this->intensity << endl;
+    }
     virtual void info() = 0;
 };
 class Door
 {
 protected:
     bool state = false;
+    string material;
+    bool autoLock;
 
 public:
     void changeStateOfDoor()
@@ -36,7 +44,7 @@ class AC
 protected:
     bool state = false;
     int temp;
-    bool powerSaving = false;
+    int fanSpeed;
 
 public:
     virtual void info() = 0;
@@ -48,6 +56,32 @@ public:
     void info() override
     {
         cout << "Samsung Light";
+    }
+    friend class SamsungLightBuilder;
+};
+class SamsungLightBuilder
+{
+private:
+    SamsungLight *light;
+
+public:
+    SamsungLightBuilder(SamsungLight *l)
+    {
+        this->light = l;
+    }
+    SamsungLightBuilder &setColor(string c)
+    {
+        light->color = c;
+        return *this;
+    }
+    SamsungLightBuilder &setIntensity(int i)
+    {
+        light->intensity = i;
+        return *this;
+    }
+    SamsungLight *build()
+    {
+        return light;
     }
 };
 class SamsungDoor : public Door
@@ -212,4 +246,11 @@ int main()
     rc.pressLight();
     // cout << l1->getStateOfLight() << endl;
     // SmartHomeFactory *shf = new PhillipsFactory();
+    SamsungLight *sl = dynamic_cast<SamsungLight *>(l1);
+    SamsungLightBuilder builder(sl);
+    Light *modifiedL1 = builder
+                            .setColor("BLUE")
+                            .setIntensity(200)
+                            .build();
+    l1->getAllAttributesOfLight();
 }
