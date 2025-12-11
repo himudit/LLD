@@ -3,8 +3,7 @@
 #include <string>
 using namespace std;
 
-class Laptop
-{
+class Laptop {
 protected:
     string CPU = "100";
     string GPU = "120";
@@ -12,106 +11,129 @@ protected:
     int storage = 140;
 
 public:
-    void specs()
-    {
-        cout << CPU << endl;
-        cout << GPU << endl;
-        cout << RAM << endl;
-        cout << storage << endl;
-    }
     virtual void use() = 0;
+    void specs() {
+        cout << "CPU: " << CPU << endl;
+        cout << "GPU: " << GPU << endl;
+        cout << "RAM: " << RAM << endl;
+        cout << "Storage: " << storage << endl;
+    }
+
+    friend class GamingLaptopBuilder;
+    friend class UltraBookBuilder;
 };
 
-class GamingLaptop : public Laptop
-{
+class GamingLaptop : public Laptop {
 public:
-    void use() override
-    {
+    void use() override {
         cout << "You have Gaming Laptop" << endl;
     }
 };
 
-class UltraBook : public Laptop
-{
+class UltraBook : public Laptop {
 public:
-    void use() override
-    {
+    void use() override {
         cout << "You have UltraBook" << endl;
     }
-    friend class UltraBookBuilder;
 };
 
-class LaptopFactory
-{
+class LaptopBuilder {
+protected:
+    Laptop* laptop;
+
 public:
-    virtual Laptop *createLaptop() = 0;
+    virtual void reset() = 0;
+
+    // <- changed return types to pointers for fluent -> chaining
+    virtual LaptopBuilder* setCPU(const string& cpu) = 0;
+    virtual LaptopBuilder* setGPU(const string& gpu) = 0;
+    virtual LaptopBuilder* setRAM(int ram) = 0;
+    virtual LaptopBuilder* setStorage(int storage) = 0;
+
+    virtual Laptop* build() = 0;
 };
 
-class GamingLaptopFactory : public LaptopFactory
-{
+class GamingLaptopBuilder : public LaptopBuilder {
 public:
-    Laptop *createLaptop()
-    {
-        return new GamingLaptop();
+    GamingLaptopBuilder() { reset(); }
+
+    void reset() override {
+        laptop = new GamingLaptop();
     }
-};
 
-class UltraBookFactory : public LaptopFactory
-{
-public:
-    Laptop *createLaptop()
-    {
-        return new UltraBook();
-    }
-};
-
-class UltraBookBuilder
-{
-private:
-    UltraBook *laptop;
-
-public:
-    UltraBookBuilder()
-    {
-        this->laptop = new UltraBook();
-    }
-    UltraBookBuilder &setCPU(string cpu)
-    {
+    LaptopBuilder* setCPU(const string& cpu) override {
         laptop->CPU = cpu;
-        return *this;
+        return this;
     }
-    UltraBookBuilder &setGPU(string gpu)
-    {
+    LaptopBuilder* setGPU(const string& gpu) override {
         laptop->GPU = gpu;
-        return *this;
+        return this;
     }
-    UltraBookBuilder &setRAM(int RAM)
-    {
-        laptop->RAM = RAM;
-        return *this;
+    LaptopBuilder* setRAM(int ram) override {
+        laptop->RAM = ram;
+        return this;
     }
-    UltraBookBuilder &setStorage(int strorage)
-    {
-        laptop->storage = strorage;
-        return *this;
+    LaptopBuilder* setStorage(int storage) override {
+        laptop->storage = storage;
+        return this;
     }
-    UltraBook *build()
-    {
-        return laptop;
+
+    Laptop* build() override {
+        Laptop* result = laptop;
+        laptop = nullptr; // optional: avoid accidental reuse
+        return result;
     }
 };
 
-int main()
-{
-    LaptopFactory *factory;
-    factory = new GamingLaptopFactory();
+class UltraBookBuilder : public LaptopBuilder {
+public:
+    UltraBookBuilder() { reset(); }
 
-    Laptop *gL = factory->createLaptop();
-    gL->use();
-    gL->specs();
+    void reset() override {
+        laptop = new UltraBook();
+    }
 
-    factory = new UltraBookFactory();
-    Laptop *uB = factory->createLaptop();
-    uB->use();
-    uB->specs();
+    LaptopBuilder* setCPU(const string& cpu) override {
+        laptop->CPU = cpu;
+        return this;
+    }
+    LaptopBuilder* setGPU(const string& gpu) override {
+        laptop->GPU = gpu;
+        return this;
+    }
+    LaptopBuilder* setRAM(int ram) override {
+        laptop->RAM = ram;
+        return this;
+    }
+    LaptopBuilder* setStorage(int storage) override {
+        laptop->storage = storage;
+        return this;
+    }
+
+    Laptop* build() override {
+        Laptop* result = laptop;
+        laptop = nullptr;
+        return result;
+    }
+};
+
+int main() {
+    LaptopBuilder* gBuilder = new GamingLaptopBuilder();
+
+    // Now fluent chaining with -> works
+    Laptop* gamingLaptop = gBuilder
+        ->setCPU("i9")
+        ->setGPU("RTX 4080")
+        ->setRAM(32)
+        ->setStorage(2000)
+        ->build();
+
+    gamingLaptop->use();
+    gamingLaptop->specs();
+
+    // cleanup
+    delete gamingLaptop;
+    delete gBuilder; // note: gBuilder->build() nulled laptop; destructor not implemented here
+
+    return 0;
 }
