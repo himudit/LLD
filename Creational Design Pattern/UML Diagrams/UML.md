@@ -1,8 +1,8 @@
 ## Abstract Factory Pattern
-![Abstract Factory](image.png)
+![Abstract Factory](Abstract.png)
 
 ## Builder Pattern
 ![Builder Pattern](Builder.png)
 
 ## Prototype Pattern
-![Prototype Pattern](image-2.png)
+![Prototype Pattern](Prototype.png)
