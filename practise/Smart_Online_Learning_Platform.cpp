@@ -13,9 +13,36 @@ protected:
 
 public:
     virtual void showDetails() = 0;
+    virtual Course *clone() = 0;
 
     friend class ProgrammingCBuilder;
     friend class DesignCBuilder;
+};
+class CourseTemplate : public Course
+{
+public:
+    CourseTemplate()
+    {
+        title = "Default";
+        instructor = "Default";
+        duration = "Default";
+        pricing = 0;
+    }
+    CourseTemplate(const CourseTemplate &other)
+    {
+        title = other.title;
+        instructor = other.instructor;
+        duration = other.duration;
+        pricing = other.pricing;
+    }
+    Course *clone()
+    {
+        return new CourseTemplate(*this);
+    }
+    void showDetails()
+    {
+        cout << "Welcome to Course " + title + " made by " + instructor + " duration of " + duration + " at " << pricing << endl;
+    }
 };
 class ProgrammingCourse : public Course
 {
@@ -24,12 +51,20 @@ public:
     {
         cout << "Welcome to Programming Course " + title + " made by " + instructor + " duration of " + duration + " at " << pricing << endl;
     }
+    Course *clone() override
+    {
+        return new ProgrammingCourse(*this);
+    }
 };
 class DesignCourse : public Course
 {
     void showDetails()
     {
         cout << "Welcome to Design Course " + title + " made by " + instructor + " duration of " + duration + " at " << pricing << endl;
+    }
+    Course *clone() override
+    {
+        return new DesignCourse(*this);
     }
 };
 class Builder
@@ -38,7 +73,7 @@ protected:
     Course *course;
 
 public:
-    virtual void reset() = 0;
+    virtual void setCourse(Course *c) = 0;
     virtual Builder *setTitle(string t) = 0;
     virtual Builder *setInstructor(string i) = 0;
     virtual Builder *setDuration(string d) = 0;
@@ -49,11 +84,11 @@ public:
 class ProgrammingCBuilder : public Builder
 {
 public:
-    ProgrammingCBuilder() { reset(); }
+    ProgrammingCBuilder() {}
 
-    void reset() override
+    void setCourse(Course *c) override
     {
-        course = new ProgrammingCourse();
+        course = c; // attach existing prototype-cloned course
     }
 
     Builder *setTitle(string t) override
@@ -78,19 +113,17 @@ public:
     }
     Course *Build()
     {
-        Course *res = course;
-        course = nullptr;
-        return res;
+        return course;
     }
 };
 class DesignCBuilder : public Builder
 {
 public:
-    DesignCBuilder() { reset(); }
+    DesignCBuilder() {}
 
-    void reset() override
+    void setCourse(Course *c) override
     {
-        course = new DesignCourse();
+        course = c; // attach existing prototype-cloned course
     }
 
     Builder *setTitle(string t) override
@@ -115,9 +148,7 @@ public:
     }
     Course *Build()
     {
-        Course *res = course;
-        course = nullptr;
-        return res;
+        return course;
     }
 };
 class courseFactory
@@ -145,12 +176,28 @@ int main()
 {
     courseFactory *cf = new ProgrammingCourseFactory();
     Course *JS = cf->createCourse();
-    Builder *builder = new DesignCBuilder();
-    Course *UI_UX = builder
-                        ->setTitle("UI/UX Mastery")
-                        ->setInstructor("Mudit")
-                        ->setDuration("3 hours")
-                        ->setPricing(3000)
-                        ->Build();
-    UI_UX->showDetails();
+    JS->showDetails();
+    Builder *Dbuilder = new DesignCBuilder();
+    Dbuilder->setCourse(JS);
+    Dbuilder
+        ->setTitle("JS Mastery")
+        ->setInstructor("Mudit")
+        ->setDuration("3 hours")
+        ->setPricing(3000)
+        ->Build();
+    JS->showDetails();
+
+    Course *programmingTemplate = new CourseTemplate();
+    Course *baseCourse = programmingTemplate->clone();
+    baseCourse->showDetails();
+
+    Builder *Pbuilder = new ProgrammingCBuilder();
+    Pbuilder->setCourse(baseCourse);
+    Pbuilder
+        ->setTitle("C++ Mastery")
+        ->setInstructor("Aman Gupta")
+        ->setDuration("2.5 hours")
+        ->setPricing(1999)
+        ->Build();
+    baseCourse->showDetails();
 }
