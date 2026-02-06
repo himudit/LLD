@@ -172,3 +172,32 @@ public:
         return new DesignCourse;
     }
 };
+int main()
+{
+    courseFactory *cf = new ProgrammingCourseFactory();
+    Course *JS = cf->createCourse();
+    JS->showDetails();
+    Builder *Dbuilder = new DesignCBuilder();
+    Dbuilder->setCourse(JS);
+    Dbuilder
+        ->setTitle("JS Mastery")
+        ->setInstructor("Mudit")
+        ->setDuration("3 hours")
+        ->setPricing(3000)
+        ->Build();
+    JS->showDetails();
+
+    Course *programmingTemplate = new CourseTemplate();
+    Course *baseCourse = programmingTemplate->clone();
+    baseCourse->showDetails();
+
+    Builder *Pbuilder = new ProgrammingCBuilder();
+    Pbuilder->setCourse(baseCourse);
+    Pbuilder
+        ->setTitle("C++ Mastery")
+        ->setInstructor("Aman Gupta")
+        ->setDuration("2.5 hours")
+        ->setPricing(1999)
+        ->Build();
+    baseCourse->showDetails();
+}
