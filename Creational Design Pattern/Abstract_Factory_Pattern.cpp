@@ -83,3 +83,5 @@ int main()
     Bike *b1 = factory->createBike();
     b1->ride();
 }
+
+// abstract factory is factory pattern plus one more dimension of complexity. Abstract factory handles two axes - which type AND which family/brand And yes — the goal is to remove if-else and follow open-closed principle.
