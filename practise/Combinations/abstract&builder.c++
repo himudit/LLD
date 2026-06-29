@@ -72,7 +72,7 @@ public:
             laptop.CPU = CPU;
             laptop.GPU = GPU;
             laptop.RAM = RAM;
-        laptop.storage = storage;
+            laptop.storage = storage;
 
             return laptop;
         }
