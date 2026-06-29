@@ -1,6 +1,6 @@
-#include <bits/stdc++.h>
 #include <iostream>
 #include <string>
+#include <stdexcept>
 using namespace std;
 
 class Laptop {
@@ -12,15 +12,13 @@ protected:
 
 public:
     virtual void use() = 0;
+
     void specs() {
         cout << "CPU: " << CPU << endl;
         cout << "GPU: " << GPU << endl;
         cout << "RAM: " << RAM << endl;
         cout << "Storage: " << storage << endl;
     }
-
-    friend class GamingLaptopBuilder;
-    friend class UltraBookBuilder;
 };
 
 class GamingLaptop : public Laptop {
@@ -28,6 +26,57 @@ public:
     void use() override {
         cout << "You have Gaming Laptop" << endl;
     }
+
+    class Builder {
+    private:
+        string CPU;
+        string GPU;
+        int RAM = 0;
+        int storage = 0;
+
+        bool CPUset = false;
+        bool RAMset = false;
+
+    public:
+        Builder& setCPU(const string& cpu) {
+            CPU = cpu;
+            CPUset = true;
+            return *this;
+        }
+
+        Builder& setGPU(const string& gpu) {
+            GPU = gpu;
+            return *this;
+        }
+
+        Builder& setRAM(int ram) {
+            RAM = ram;
+            RAMset = true;
+            return *this;
+        }
+
+        Builder& setStorage(int s) {
+            storage = s;
+            return *this;
+        }
+
+        GamingLaptop build() {
+            if (!CPUset)
+                throw runtime_error("CPU is required");
+
+            if (!RAMset)
+                throw runtime_error("RAM is required");
+
+            GamingLaptop laptop;
+
+            laptop.CPU = CPU;
+            laptop.GPU = GPU;
+            laptop.RAM = RAM;
+        laptop.storage = storage;
+
+            return laptop;
+        }
+    };
 };
 
 class UltraBook : public Laptop {
@@ -35,105 +84,84 @@ public:
     void use() override {
         cout << "You have UltraBook" << endl;
     }
-};
 
-class LaptopBuilder {
-protected:
-    Laptop* laptop;
+    class Builder {
+    private:
+        string CPU;
+        string GPU;
+        int RAM = 0;
+        int storage = 0;
 
-public:
-    virtual void reset() = 0;
+        bool CPUset = false;
+        bool RAMset = false;
 
-    // <- changed return types to pointers for fluent -> chaining
-    virtual LaptopBuilder* setCPU(const string& cpu) = 0;
-    virtual LaptopBuilder* setGPU(const string& gpu) = 0;
-    virtual LaptopBuilder* setRAM(int ram) = 0;
-    virtual LaptopBuilder* setStorage(int storage) = 0;
+    public:
+        Builder& setCPU(const string& cpu) {
+            CPU = cpu;
+            CPUset = true;
+            return *this;
+        }
 
-    virtual Laptop* build() = 0;
-};
+        Builder& setGPU(const string& gpu) {
+            GPU = gpu;
+            return *this;
+        }
 
-class GamingLaptopBuilder : public LaptopBuilder {
-public:
-    GamingLaptopBuilder() { reset(); }
+        Builder& setRAM(int ram) {
+            RAM = ram;
+            RAMset = true;
+            return *this;
+        }
 
-    void reset() override {
-        laptop = new GamingLaptop();
-    }
+        Builder& setStorage(int s) {
+            storage = s;
+            return *this;
+        }
 
-    LaptopBuilder* setCPU(const string& cpu) override {
-        laptop->CPU = cpu;
-        return this;
-    }
-    LaptopBuilder* setGPU(const string& gpu) override {
-        laptop->GPU = gpu;
-        return this;
-    }
-    LaptopBuilder* setRAM(int ram) override {
-        laptop->RAM = ram;
-        return this;
-    }
-    LaptopBuilder* setStorage(int storage) override {
-        laptop->storage = storage;
-        return this;
-    }
+        UltraBook build() {
+            if (!CPUset)
+                throw runtime_error("CPU is required");
 
-    Laptop* build() override {
-        Laptop* result = laptop;
-        laptop = nullptr; // optional: avoid accidental reuse
-        return result;
-    }
-};
+            if (!RAMset)
+                throw runtime_error("RAM is required");
 
-class UltraBookBuilder : public LaptopBuilder {
-public:
-    UltraBookBuilder() { reset(); }
+            UltraBook laptop;
 
-    void reset() override {
-        laptop = new UltraBook();
-    }
+            laptop.CPU = CPU;
+            laptop.GPU = GPU;
+            laptop.RAM = RAM;
+            laptop.storage = storage;
 
-    LaptopBuilder* setCPU(const string& cpu) override {
-        laptop->CPU = cpu;
-        return this;
-    }
-    LaptopBuilder* setGPU(const string& gpu) override {
-        laptop->GPU = gpu;
-        return this;
-    }
-    LaptopBuilder* setRAM(int ram) override {
-        laptop->RAM = ram;
-        return this;
-    }
-    LaptopBuilder* setStorage(int storage) override {
-        laptop->storage = storage;
-        return this;
-    }
-
-    Laptop* build() override {
-        Laptop* result = laptop;
-        laptop = nullptr;
-        return result;
-    }
+            return laptop;
+        }
+    };
 };
 
 int main() {
-    LaptopBuilder* gBuilder = new GamingLaptopBuilder();
 
-    // Now fluent chaining with -> works
-    Laptop* gamingLaptop = gBuilder
-        ->setCPU("i9")
-        ->setGPU("RTX 4080")
-        ->setRAM(32)
-        ->setStorage(2000)
-        ->build();
+    GamingLaptop gamingLaptop =
+        GamingLaptop::Builder()
+            .setCPU("Intel i9")
+            .setGPU("RTX 4080")
+            .setRAM(32)
+            .setStorage(2000)
+            .build();
 
-    gamingLaptop->use();
-    gamingLaptop->specs();
+    gamingLaptop.use();
+    gamingLaptop.specs();
 
-    // cleanup
-    delete gamingLaptop;
-    delete gBuilder; // note: gBuilder->build() nulled laptop; destructor not implemented here
+    cout << endl;
+
+    UltraBook ultraBook =
+        UltraBook::Builder()
+            .setCPU("Intel Ultra 7")
+            .setGPU("Integrated Iris Xe")
+            .setRAM(16)
+            .setStorage(1000)
+            .build();
+
+    ultraBook.use();
+    ultraBook.specs();
 
     return 0;
 }
