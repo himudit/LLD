@@ -9,6 +9,19 @@ public:
     virtual void update(const string &msg) = 0;
 };
 
+class Subscriber : public Observer
+{
+private:
+    string name;
+
+public:
+    Subscriber(string n) : name(n) {}
+    void update(const string &msg) override
+    {
+        cout << name << " received notification: " << msg << endl;
+    }
+};
+
 class Subject
 {
 public:
@@ -37,19 +50,6 @@ public:
         {
             sub->update(msg);
         }
-    }
-};
-
-class Subscriber : public Observer
-{
-private:
-    string name;
-
-public:
-    Subscriber(string n) : name(n) {}
-    void update(const string &msg) override
-    {
-        cout << name << " received notification: " << msg << endl;
     }
 };
 
