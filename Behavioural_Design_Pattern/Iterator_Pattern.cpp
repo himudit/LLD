@@ -19,12 +19,6 @@ public:
     virtual Song next() = 0;
 };
 
-class IterableCollection
-{
-public:
-    virtual Iterator *createIterator() = 0;
-};
-
 class PlaylistIterator : public Iterator
 {
 private:
@@ -49,6 +43,12 @@ public:
         index++;
         return current;
     }
+};
+
+class IterableCollection
+{
+public:
+    virtual Iterator *createIterator() = 0;
 };
 
 class Playlist : public IterableCollection
@@ -82,3 +82,5 @@ int main()
     }
     delete it;
 }
+
+// Iterator Pattern provides a way to access elements of a collection one by one without exposing how the collection stores them.
