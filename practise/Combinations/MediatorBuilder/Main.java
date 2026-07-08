@@ -2,24 +2,6 @@ package practise.Combinations.MediatorBuilder;
 
 import java.util.*;
 
-// interface Observer {
-//     void update(String event);
-// }
-
-// class Employee implements Observer {
-//     public void update() {
-
-//     }
-// }
-
-// interface Subject {
-//     void attach(Observer obs);
-
-//     void detach(Observer obs);
-
-//     void notify(String msg);
-// }
-
 interface Mediator {
     void placeOrder(Order o);
 }
