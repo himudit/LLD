@@ -3,12 +3,6 @@
 #include <string>
 using namespace std;
 
-class Command
-{
-public:
-    virtual void execute() = 0;
-};
-
 class Light
 {
 private:
@@ -40,6 +34,13 @@ public:
         return state;
     }
 };
+
+class Command
+{
+public:
+    virtual void execute() = 0;
+};
+
 
 class ChangeLightStateCommand : public Command
 {
